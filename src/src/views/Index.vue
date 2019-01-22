@@ -1,14 +1,15 @@
 <template>
   <div class="index" :class="sceneClass">
-    <svg-icon name="logo" :class="{'active': sceneClass.indexOf('to-presentation') === -1}"></svg-icon>
-    <h2 :class="{'active': sceneClass.indexOf('to-both') !== -1 || !sceneClass}">{{ title }} <span v-if="subTitle">{{ subTitle }}</span></h2>
+    <svg-icon name="logo" :class="{'active': scene !== 'presentation'}"></svg-icon>
+    <svg-icon name="background" :class="{'active': scene !== 'presentation'}"></svg-icon>
+    <svg-icon name="background-cross" :class="{'active': scene !== 'presentation'}"></svg-icon>
+    <svg-icon name="background-circles" :class="{'active': scene !== 'presentation'}"></svg-icon>
+    <h2 :class="{'active': !scene}">{{ title }} <span v-if="subTitle">{{ subTitle }}</span></h2>
     <div class="box presenter">
-        <svg-icon name="logo"></svg-icon>
         <web-cam ref="webcam"
           :device-id="presenterCam"/>
     </div>
     <div class="box box--16-9 presentation">
-        <svg-icon name="logo"></svg-icon>
         <web-cam ref="webcam"
           :device-id="presentationCam"/>
     </div>
@@ -37,6 +38,7 @@ export default {
       cameraList: 'app/getCameras',
       selectedCameraList: 'app/getSelectedCameras',
       sceneClass: 'app/getSceneClass',
+      scene: 'app/getScene',
       title: 'app/getTitle',
       subTitle: 'app/getSubTitle',
     }),
@@ -185,19 +187,55 @@ export default {
     }
   }
 
+  .svg {
+    opacity: 0;
+    transition: all $timing / 1.5 ease-in-out;
+
+    &.active {
+      opacity: 1;
+      transition-delay: $timing;
+    }
+  }
+
   .svg--logo {
     position: absolute;
     bottom: 5%;
     left: 2.5%;
     width: 14.15%;
     height: 6.85%;
-    opacity: 0;
     z-index: 100;
-    transition: all $timing / 1.5 ease-in-out;
+  }
+
+  .svg--background {
+    position: absolute;
+    width: 85%;
+    height: 80%;
+    left: 5%;
+    top: 10%;
+    mask-image: -webkit-gradient(linear, left top, 
+      right bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
+  }
+
+  .svg--background-cross {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    mask-image: -webkit-gradient(linear, left top, 
+      right bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
+  }
+
+  .svg--background-circles {
+    position: absolute;
+    width: 90%;
+    height: 90%;
+    left: 5%;
+    top: 7%;
+    mix-blend-mode: screen;
 
     &.active {
-      opacity: 1;
-      transition-delay: $timing;
+      opacity: .21;
     }
   }
 
