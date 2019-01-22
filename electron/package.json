@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "package": "npm-run-all package:*",
-    "package:mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --out=out --icon=app/icon.icns --osx-sign.identity='Developer ID Application: GitHub' --extend-info=assets/mac/info.plist",
+    "package:mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --out=out --icon=app/icon.icns --osx-sign.identity='Developer ID Application: GitHub'",
     "package:win": "electron-packager . --overwrite --platform=win32 --arch=ia32 --out=out --icon=app/icon.ico",
     "package:linux": "electron-packager . --overwrite --platform=linux --arch=x64 --out=out"
   },
@@ -16,7 +16,8 @@
     "socket.io": "^2.2.0"
   },
   "devDependencies": {
+    "electron": "^4.0.1",
     "electron-packager": "^13.0.1",
-    "electron": "^4.0.1"
+    "npm-run-all": "^4.1.5"
   }
 }
