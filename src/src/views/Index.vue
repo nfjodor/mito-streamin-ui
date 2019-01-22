@@ -5,6 +5,14 @@
     <svg-icon name="background-cross" :class="{'active': scene !== 'presentation'}"></svg-icon>
     <svg-icon name="background-circles" :class="{'active': scene !== 'presentation'}"></svg-icon>
     <h2 :class="{'active': !scene}">{{ title }} <span v-if="subTitle">{{ subTitle }}</span></h2>
+    <div class="lines">
+      <div v-for="line in brightLines" :key="line.id" class="line line--bright" :style="`animation-delay: ${line.delay}s; animation-duration: ${line.duration}s; top: ${line.top}%; left: ${line.left}%`">
+        <span :style="`transform: scale(${line.scale})`"></span>
+      </div>
+      <div v-for="line in darkLines" :key="line.id" class="line line--dark" :style="`animation-delay: ${line.delay}s; animation-duration: ${line.duration}s; top: ${line.top}%; left: ${line.left}%`">
+        <span :style="`transform: scale(${line.scale})`"></span>
+      </div>
+    </div>
     <div class="box presenter">
         <web-cam ref="webcam"
           :device-id="presenterCam"/>
@@ -26,7 +34,7 @@ export default {
   data() {
     return {
       presenterCam: '',
-      presentationCam: ''
+      presentationCam: '',
     }
   },
   components: {
@@ -42,6 +50,34 @@ export default {
       title: 'app/getTitle',
       subTitle: 'app/getSubTitle',
     }),
+    brightLines() {
+      const lines = [];
+      for (let index = 0; index < 30; index++) {
+        lines.push({
+          id: `bright_${index}`,
+          delay: this.randomNum(0, 30),
+          duration: this.randomNum(30, 60),
+          top: this.randomNum(-100, 100),
+          left: this.randomNum(0, 100),
+          scale: this.randomNum()
+        });
+      }
+      return lines;
+    },
+    darkLines() {
+      const lines = [];
+      for (let index = 0; index < 20; index++) {
+        lines.push({
+          id: `dark_${index}`,
+          delay: this.randomNum(0, 30),
+          duration: this.randomNum(30, 60),
+          top: this.randomNum(-100, 100),
+          left: this.randomNum(0, 100),
+          scale: this.randomNum()
+        });
+      }
+      return lines;
+    }
   },
   watch: {
     selectedCameraList(camList) {
@@ -60,12 +96,50 @@ export default {
       const cameraList = devices.filter(device => device.kind === 'videoinput');
       this.$store.dispatch('app/fillCameras', cameraList);
     });
+  },
+  methods: {
+    randomNum(min = 0.43, max = 1) {
+      return Math.random() * (max - min) + min;
+    }
   }
 };
 </script>
 
 <style scoped lang="scss">
   $timing: 1s;
+
+  .lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    mask-image: -webkit-gradient(linear, left top, 
+      right bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
+  }
+
+  .line {
+    width: 338px;
+    height: 7px;
+    position: relative;
+    transform: rotate(-45deg);
+    opacity: 0;
+    animation: line-anim 5s linear infinite;
+
+    span {
+      content: '';
+      display: block;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #f8166c;
+    }
+
+    &--dark span {
+      background: #95145e;
+    }
+  }
 
   h2 {
     color: #fff;
@@ -77,6 +151,7 @@ export default {
     top: -45px;
     left: 55px;
     opacity: 0;
+    z-index: 10;
     transition: all $timing ease-in-out;
 
     &.active {
@@ -394,6 +469,11 @@ export default {
     50% { transform: translate(-25%, 0) rotateY(1.5deg) scale(.7); }
     75% { transform: translate(0, 0); z-index: 10; }
     100% { transform: translate(0, 0); }
+  }
+
+  @keyframes line-anim {
+    0% { opacity: 1; transform: rotate(-45deg) translateX(3000px) }
+    100% { opacity: 1; transform: rotate(-45deg) translateX(-3000px) }
   }
 </style>
 
