@@ -6,12 +6,20 @@
     </div>
     <div class="cameras">
       <div class="presenter">
+        <div>
+          <input type="radio" id="presenter_null" value="" v-model="presenterCamera">
+          <label for="presenter_null">none</label>
+        </div>
         <div v-for="camera in cameraList" :key="camera.id">
           <input type="radio" :disabled="camera.id === presentationCamera" :id="`presenter_${camera.deviceId}`" :value="camera.id" v-model="presenterCamera">
           <label :for="`presenter_${camera.deviceId}`">{{ camera.name }}</label>
         </div>
       </div>
       <div class="presentation">
+        <div>
+          <input type="radio" id="presentation_null" value="" v-model="presentationCamera">
+          <label for="presentation_null">none</label>
+        </div>
         <div v-for="camera in cameraList" :key="camera.id">
           <input type="radio" :disabled="camera.id === presenterCamera" :id="`presentation_${camera.deviceId}`" :value="camera.id" v-model="presentationCamera">
           <label :for="`presentation_${camera.deviceId}`">{{ camera.name }}</label>
@@ -37,7 +45,7 @@
       <input type="text" v-model="title">
       <input type="text" v-model="subTitle">
     </div>
-    <span class="client">client address: http://localhost:18501</span>
+    <span class="client">client address: <a href="http://localhost:18499" target="_top">http://localhost:18499</a></span>
   </div>
 </template>
 <script>
@@ -278,6 +286,10 @@ input[type="radio"] {
       border-color: #b3e1ff;
     }
   }
+}
+
+a {
+  color:#b3e1ff;
 }
 
 </style>

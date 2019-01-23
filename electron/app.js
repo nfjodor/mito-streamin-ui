@@ -4,27 +4,26 @@ const path = require('path');
 
 let mainWindow = null;
 
-const socketServer = express().listen(18499, () => {
-    console.log('socketServer running on port 18499');
-});
-
-const appServer = express()
+const socketServer = express()
     .use(express.static(`${__dirname}/app`))
-    .listen(18501, () => {
-        console.log('socketServer running on port 18501');
+    .listen(18499, () => {
+        console.log('socketServer running on port 18499');
     });
 
 const io = require('socket.io')(socketServer);
 const streamerSettings = {
     cameras: {},
-    sceneClass: '',
+    scene: {
+        scene: '',
+        className: '',
+    },
     title: '',
     subTitle: ''
 };
 
 io.on('connection', (socket) => {
     socket.emit('SET_CAMERAS', streamerSettings.cameras);
-    socket.emit('SET_SCENE', streamerSettings.sceneClass);
+    socket.emit('SET_SCENE', streamerSettings.scene);
     socket.emit('SET_TITLE', streamerSettings.title);
     socket.emit('SET_SUB_TITLE', streamerSettings.subTitle);
 
@@ -33,8 +32,8 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('SET_CAMERAS', streamerSettings.cameras);
     });
     socket.on('SET_SCENE', (data) => {
-        streamerSettings.sceneClass = data;
-        socket.broadcast.emit('SET_SCENE', streamerSettings.sceneClass);
+        streamerSettings.scene = data;
+        socket.broadcast.emit('SET_SCENE', streamerSettings.scene);
     });
     socket.on('SET_TITLE', (data) => {
         streamerSettings.title = data;
@@ -55,7 +54,8 @@ function initialize() {
             minWidth: 380,
             height: 460,
             inHeight: 460,
-            title: app.getName()
+            title: app.getName(),
+            icon: `${__dirname}/app/icon.ico`
         }
 
         mainWindow = new BrowserWindow(windowOptions);
