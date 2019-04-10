@@ -122,12 +122,36 @@ export default {
       this.currentScene = scene;
     }
   },
+  methods: {
+    keydownListener(event) {
+      if ([112, 113, 114].includes(event.keyCode)) {
+        event.preventDefault();
+        let scene = '';
+        switch (event.keyCode) {
+          case 112:
+            scene = 'presenter';
+            break;
+          case 113:
+            scene = 'presentation';
+            break;
+          default:
+            break;
+        }
+        this.currentScene = scene;
+      }
+    }
+  },
   mounted() {
     navigator.mediaDevices.enumerateDevices().then((devices) => {
       const cameraList = devices.filter(device => device.kind === 'videoinput');
       this.$store.dispatch('app/fillCameras', cameraList);
     });
+    window.removeEventListener('keydown', this.keydownListener);
+    window.addEventListener('keydown', this.keydownListener);
   },
+  destroyed() {
+    window.removeEventListener('keydown', this.keydownListener);
+  }
 }
 </script>
 <style scoped lang="scss">
@@ -251,7 +275,7 @@ input[type="radio"] {
     color: rgba(#b3e1ff, .75);
     background-image: linear-gradient(to top, #151515 0%, #1d1d1d 100%);
     box-shadow: inset 0 16px 14px -21px transparent, 0 0px 13px 0 rgba(0,0,0,0.3), inset 0 0 7px 2px rgba(0,0,0,0.4);
-  
+
     &::after {
       opacity: 1;
     }
